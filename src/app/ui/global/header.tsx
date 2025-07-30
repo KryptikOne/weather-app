@@ -1,15 +1,18 @@
 'use client';
-import React from 'react';
-import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
-import { ArrowRightStartOnRectangleIcon, Bars3Icon, BellIcon, Cog8ToothIcon, UserCircleIcon, XMarkIcon } from '@heroicons/react/24/outline';
-import Image from 'next/image';
-import { usePathname } from 'next/navigation';
-import clsx from 'clsx';
-import { links } from '@/app/lib/utils';
-import LogoImage from '@/app/ui/assets/img/clouds-emoji-favicon.png';
-import Avatar from '@/app/ui/assets/img/avatar-hooded.jpg';
-import NavLinks from '@/app/ui/global/nav-links';
+import React from 'react'
+import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
+import { ArrowRightStartOnRectangleIcon, Bars3Icon, BellIcon, ChartBarIcon, Cog8ToothIcon, HomeIcon, UserCircleIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import Image from 'next/image'
+import { usePathname } from 'next/navigation'
+import clsx from 'clsx'
+import LogoImage from '@/app/ui/assets/img/clouds-emoji-favicon.png'
+import Avatar from '@/app/ui/assets/img/avatar-hooded.jpg'
+import NavLinks from '@/app/ui/global/nav-links'
 
+const links = [
+  { name: 'Home', slug: 'home', href: '/', icon: HomeIcon },
+  { name: 'Dashboard', slug: 'dashboard', href: '/dashboard',  icon: ChartBarIcon },
+]
 
 export default function Header() {
   const pathname = usePathname();

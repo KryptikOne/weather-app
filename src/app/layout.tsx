@@ -1,13 +1,6 @@
 import type { Metadata } from "next"
-import { Nunito_Sans } from "next/font/google"
 import BreakpointHelper from "./ui/global/breakpoint-helper"
 import "./globals.css"
-
-const nunito_sans = Nunito_Sans({
-  variable: "--font-nunito_sans",
-  subsets: ["latin"],
-  weight: ["200", "400", "700"],
-})
 
 export const metadata = {
   title: "Weather ⛈️ ⛈️ ⛈️",
@@ -21,7 +14,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${nunito_sans.variable} antialiased`}>
+      <body className={`antialiased`}>
         {children}
         <BreakpointHelper />
       </body>
