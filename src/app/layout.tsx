@@ -1,10 +1,11 @@
+import { StateContextProvider } from "@/app/context/StateContext"
 import type { Metadata } from "next"
-import BreakpointHelper from "./ui/global/breakpoint-helper"
-import "./globals.css"
+import "@/app/globals.css"
+import BreakpointHelper from "@/app/ui/global/breakpoint-helper"
 
 export const metadata = {
   title: "Weather ⛈️ ⛈️ ⛈️",
-  description: "A configurable weather app using open data",
+  description: "A configurable weather app using open data"
 }
 
 export default function RootLayout({
@@ -15,7 +16,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`antialiased`}>
-        {children}
+        <StateContextProvider>{children}</StateContextProvider>
         <BreakpointHelper />
       </body>
     </html>

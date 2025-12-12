@@ -8,15 +8,17 @@ import MoonPhase from '@/app/ui/dashboard/moon-phase'
 import SunriseSunset from '@/app/ui/dashboard/sunrise-sunset'
 
 export default function DashboardClient({
-  currentdata
+  currentdata,
+  locationLatLong = { lat: 41.881832, lon: -87.623177 }, // Default to Chicago if no location provided
 }: {
-  currentdata: unknown
+  currentdata: unknown,
+  locationLatLong?: { lat: number; lon: number }
 }) {
   const currentWeather = currentdata
-  const [location, setLocation] = useState<{ lat: number; lon: number } | null>(null)
+  const [coords, setCoords] = useState<{ lat: number; lon: number } | null>(null)
 
   const handleLocationSelected = (lat: number, lon: number) => {
-    setLocation({ lat, lon })
+    setCoords({ lat, lon })
     // Optionally trigger data fetches for widgets here
   };
 
@@ -24,11 +26,13 @@ export default function DashboardClient({
     <>
       <LocationSearch onLocationSelected={handleLocationSelected} />
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 p-6 bg-gray-300">
-        <CurrentConditions data={currentWeather} location={location} />
-        <HourlyConditions location={location} />
-        <DailyConditions location={location} />
-        <MoonPhase location={location} />
-        <SunriseSunset location={location} />
+        {coords && (
+          <CurrentConditions data={currentWeather} coords={coords} />
+        )}
+        <HourlyConditions coords={coords} />
+        <DailyConditions coords={coords} />
+        <MoonPhase coords={coords} />
+        <SunriseSunset coords={coords} />
       </div>
     </>
   )
