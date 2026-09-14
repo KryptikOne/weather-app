@@ -2,6 +2,7 @@ import { render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { STORAGE_KEY } from "@/lib/store/persist";
 import { StoreProvider } from "@/lib/store/StoreProvider";
+import { MotionProvider } from "@/components/motion/MotionProvider";
 import { CATALOG } from "@/cards/registry";
 import { App } from "./App";
 
@@ -23,7 +24,7 @@ describe("App", () => {
       locations: { saved: [{ id: "x", name: "Tokyo", country: "JP", lat: 35.6, lon: 139.7 }], active: "x" },
     }));
     vi.spyOn(globalThis, "fetch").mockResolvedValue(new Response("{}", { status: 502 }));
-    render(<StoreProvider catalog={CATALOG}><App /></StoreProvider>);
+    render(<StoreProvider catalog={CATALOG}><MotionProvider><App /></MotionProvider></StoreProvider>);
     expect(await screen.findByRole("button", { name: /Tokyo/ })).toBeInTheDocument();
     expect(await screen.findByRole("heading", { name: "Sun" })).toBeInTheDocument();
   });
@@ -33,7 +34,7 @@ describe("App", () => {
       configurable: true,
       value: { getCurrentPosition: (_ok: unknown, fail: (e: unknown) => void) => fail({ code: 1 }) },
     });
-    render(<StoreProvider catalog={CATALOG}><App /></StoreProvider>);
+    render(<StoreProvider catalog={CATALOG}><MotionProvider><App /></MotionProvider></StoreProvider>);
     expect(await screen.findByText(/pick a city/i)).toBeInTheDocument();
   });
 
@@ -43,7 +44,7 @@ describe("App", () => {
       locations: { saved: [{ id: "x", name: "Tokyo", country: "JP", lat: 35.6, lon: 139.7 }], active: "x" },
     }));
     vi.spyOn(globalThis, "fetch").mockResolvedValue(new Response("{}", { status: 502 }));
-    render(<StoreProvider catalog={CATALOG}><App /></StoreProvider>);
+    render(<StoreProvider catalog={CATALOG}><MotionProvider><App /></MotionProvider></StoreProvider>);
     await screen.findByRole("heading", { name: "Sun" });
     expect(screen.queryByRole("button", { name: "Done" })).not.toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Menu" })).toBeInTheDocument();

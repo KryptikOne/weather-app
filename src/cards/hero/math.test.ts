@@ -11,6 +11,8 @@ describe("starField", () => {
       expect(s.x).toBeGreaterThanOrEqual(0); expect(s.x).toBeLessThanOrEqual(100);
       expect(s.y).toBeGreaterThanOrEqual(0); expect(s.y).toBeLessThanOrEqual(100);
       expect(s.r).toBeGreaterThan(0); expect(s.o).toBeGreaterThan(0); expect(s.o).toBeLessThanOrEqual(1);
+      expect(s.dur).toBeGreaterThanOrEqual(2.5); expect(s.dur).toBeLessThanOrEqual(5);
+      expect(s.delay).toBeGreaterThanOrEqual(0); expect(s.delay).toBeLessThanOrEqual(4);
     }
   });
   it("differs across seeds", () => {

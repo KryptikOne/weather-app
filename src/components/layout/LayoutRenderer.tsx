@@ -1,4 +1,5 @@
 "use client";
+import { AnimatePresence, m, useReducedMotion } from "motion/react";
 import type { ReactNode } from "react";
 import { REGISTRY } from "@/cards/registry";
 import { clampSpan, type AnyCardDefinition, type Breakpoint, type CardInstance, type CardLocation, type CardProps, type CardStatus } from "@/cards/types";
@@ -29,6 +30,19 @@ type Props = {
 };
 
 export function LayoutRenderer({ cards, breakpoint, data, registry = REGISTRY, wrap, editing = false }: Props) {
+  const reduced = useReducedMotion();
+  const transition = reduced ? { duration: 0 } : { type: "spring" as const, stiffness: 300, damping: 30 };
+  // dnd-kit owns transforms while editing, so layout animation is off then; enter and exit stay on.
+  const motionProps = (id: string) => ({
+    layout: !editing && !reduced,
+    initial: { opacity: 0, scale: 0.97 },
+    animate: { opacity: 1, scale: 1 },
+    exit: { opacity: 0, scale: 0.97 },
+    transition,
+    "data-testid": `card-motion-${id}`,
+    className: "h-full",
+  });
+
   const items: { instance: CardInstance; def: AnyCardDefinition; props: CardProps }[] = [];
   for (const instance of cards) {
     const def = registry[instance.type];
@@ -55,19 +69,27 @@ export function LayoutRenderer({ cards, breakpoint, data, registry = REGISTRY, w
   if (breakpoint === "phone") {
     return (
       <PhoneStack>
-        {items.map(({ instance, def, props }) => (
-          <div key={instance.id}>{decorate(instance, def, <def.component {...props} />)}</div>
-        ))}
+        <AnimatePresence initial={false}>
+          {items.map(({ instance, def, props }) => (
+            <m.div key={instance.id} {...motionProps(instance.id)}>
+              {decorate(instance, def, <def.component {...props} />)}
+            </m.div>
+          ))}
+        </AnimatePresence>
       </PhoneStack>
     );
   }
   return (
     <DesktopGrid>
-      {items.map(({ instance, def, props }) => (
-        <DesktopCell key={instance.id} span={props.span ?? def.defaultSpan} testId={`cell-${instance.id}`}>
-          {decorate(instance, def, <def.component {...props} />)}
-        </DesktopCell>
-      ))}
+      <AnimatePresence initial={false}>
+        {items.map(({ instance, def, props }) => (
+          <DesktopCell key={instance.id} span={props.span ?? def.defaultSpan} testId={`cell-${instance.id}`}>
+            <m.div {...motionProps(instance.id)}>
+              {decorate(instance, def, <def.component {...props} />)}
+            </m.div>
+          </DesktopCell>
+        ))}
+      </AnimatePresence>
     </DesktopGrid>
   );
 }

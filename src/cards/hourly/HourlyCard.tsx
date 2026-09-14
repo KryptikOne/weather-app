@@ -1,5 +1,6 @@
 "use client";
 import { Clock } from "lucide-react";
+import { m, useReducedMotion } from "motion/react";
 import { useState } from "react";
 import { CardFrame } from "@/cards/CardFrame";
 import type { CardProps } from "@/cards/types";
@@ -13,7 +14,7 @@ import { barLayout, curveLayout, formatStripValue, hourlySeries, isBarMetric } f
 
 const STRIP_HEIGHT = 96;
 
-export function HourlyCard({ options, snapshot, location, units, status, breakpoint }: CardProps<HourlyOptions>) {
+export function HourlyCard({ instance, options, snapshot, location, units, status, breakpoint }: CardProps<HourlyOptions>) {
   const metrics = options.metrics.filter((k) => METRICS[k as MetricKey]?.fromHourly);
   const [picked, setPicked] = useState(options.defaultMetric);
   const active = metrics.includes(picked) ? picked : metrics[0] ?? "temp";
@@ -32,6 +33,10 @@ export function HourlyCard({ options, snapshot, location, units, status, breakpo
   const defined = values.filter((v): v is number => v != null);
   const mean = defined.length ? defined.reduce((a, b) => a + b, 0) / defined.length : 0;
   const stroke = isTemp ? tempColor(mean) : "var(--weather-accent)";
+
+  const reduced = useReducedMotion();
+  const spring = reduced ? { duration: 0 } : { type: "spring" as const, stiffness: 400, damping: 32 };
+  const ease = reduced ? { duration: 0 } : { duration: 0.45, ease: "easeInOut" as const };
 
   return (
     <CardFrame title="Hourly Forecast" icon={Clock} status={hourly ? status : "loading"}>
@@ -54,9 +59,9 @@ export function HourlyCard({ options, snapshot, location, units, status, breakpo
                 ))}
               </div>
               <svg width={width} height={STRIP_HEIGHT} viewBox={`0 0 ${width} ${STRIP_HEIGHT}`} className="block">
-                {curve && <path d={curve.path} fill="none" stroke={stroke} strokeWidth="3" strokeLinecap="round" />}
+                {curve && <m.path initial={false} animate={{ d: curve.path }} transition={ease} fill="none" stroke={stroke} strokeWidth="3" strokeLinecap="round" />}
                 {rects?.map((r, i) => (
-                  <rect key={series[i].time} data-testid="strip-bar" x={r.x} y={r.y} width={r.w} height={r.h} rx="3" fill="var(--weather-accent)" />
+                  <m.rect key={series[i].time} data-testid="strip-bar" initial={false} animate={{ attrY: r.y, height: r.h }} transition={ease} x={r.x} width={r.w} rx="3" fill="var(--weather-accent)" />
                 ))}
                 {series.map((s, i) => {
                   const label = formatStripValue(active, s.value, units);
@@ -64,18 +69,19 @@ export function HourlyCard({ options, snapshot, location, units, status, breakpo
                   const x = curve ? curve.points[i].x : rects![i].x + rects![i].w / 2;
                   const y = curve ? curve.points[i].y ?? STRIP_HEIGHT / 2 : Math.max(12, rects![i].y - 6);
                   return (
-                    <text
+                    <m.text
                       key={s.time}
                       data-testid="strip-value"
-                      x={x}
-                      y={y}
+                      initial={false}
+                      animate={{ attrX: x, attrY: y }}
+                      transition={ease}
                       dy={curve ? 4.5 : 0}
                       textAnchor="middle"
                       className="fill-foreground text-[13px] font-extrabold"
                       style={{ paintOrder: "stroke", stroke: "var(--card)", strokeWidth: 6, strokeLinejoin: "round" }}
                     >
                       {label}
-                    </text>
+                    </m.text>
                   );
                 })}
               </svg>
@@ -91,11 +97,12 @@ export function HourlyCard({ options, snapshot, location, units, status, breakpo
                   aria-pressed={on}
                   onClick={() => setPicked(k)}
                   className={cn(
-                    "shrink-0 rounded-full border px-3 py-1 text-xs font-bold whitespace-nowrap transition-colors",
-                    on ? "border-transparent bg-weather-accent text-weather-accent-foreground" : "border-weather-accent/50 text-weather-accent hover:bg-weather-accent/10",
+                    "relative shrink-0 rounded-full border px-3 py-1 text-xs font-bold whitespace-nowrap transition-colors",
+                    on ? "border-transparent text-weather-accent-foreground" : "border-weather-accent/50 text-weather-accent hover:bg-weather-accent/10",
                   )}
                 >
-                  {METRICS[k as MetricKey].label}
+                  {on && <m.span layoutId={`chip-${instance.id}`} data-testid="chip-pill" transition={spring} className="absolute inset-0 rounded-full bg-weather-accent" />}
+                  <span className="relative">{METRICS[k as MetricKey].label}</span>
                 </button>
               );
             })}

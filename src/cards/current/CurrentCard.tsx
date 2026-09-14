@@ -3,6 +3,7 @@ import { Thermometer } from "lucide-react";
 import { CardFrame } from "@/cards/CardFrame";
 import type { CardProps } from "@/cards/types";
 import { WeatherIcon } from "@/components/icons/WeatherIcon";
+import { AnimatedNumber } from "@/components/motion/AnimatedNumber";
 import { formatTemp } from "@/lib/format/units";
 import { tempColor } from "@/lib/theme/tempColor";
 import { cn } from "@/lib/utils";
@@ -18,8 +19,8 @@ export function CurrentCard({ options, snapshot, units, status, breakpoint }: Ca
           <div className="flex items-center gap-4">
             {options.showIcon && <WeatherIcon condition={current.condition} size={breakpoint === "desktop" ? 72 : 56} />}
             <div>
-              <div data-testid="current-temp" className="text-5xl font-black leading-none" style={{ color: tempColor(current.temp) }}>
-                {formatTemp(current.temp, units)}
+              <div style={{ color: tempColor(current.temp) }}>
+                <AnimatedNumber value={current.temp} format={(c) => formatTemp(c, units)} className="block text-5xl font-black leading-none" testId="current-temp" />
               </div>
               <div className="mt-1 text-sm font-semibold text-muted-foreground">{current.condition.label}</div>
             </div>

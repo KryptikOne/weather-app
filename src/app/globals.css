@@ -72,3 +72,29 @@
     font-variant-numeric: tabular-nums;
   }
 }
+
+/* Registered so the sky gradient and accent can transition between conditions. */
+@property --sky-top { syntax: "<color>"; inherits: true; initial-value: #0b1026; }
+@property --sky-bottom { syntax: "<color>"; inherits: true; initial-value: #1a1f3d; }
+@property --weather-accent { syntax: "<color>"; inherits: true; initial-value: #4f8cff; }
+
+:root {
+  transition: --sky-top 1.2s ease, --sky-bottom 1.2s ease, --weather-accent 1.2s ease;
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: var(--o, 1); }
+  50% { opacity: calc(var(--o, 1) * 0.25); }
+}
+.twinkle {
+  animation: twinkle var(--dur, 3s) ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

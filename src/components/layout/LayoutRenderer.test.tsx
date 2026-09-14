@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react";
+import { MotionProvider } from "@/components/motion/MotionProvider";
 import { Sun } from "lucide-react";
 import { describe, expect, it } from "vitest";
 import { defineCard, type AnyCardDefinition, type CardProps } from "@/cards/types";
@@ -23,29 +24,30 @@ const cards = [
   { id: "3", type: "nope", options: {} },
   { id: "4", type: "h", options: {} },
 ];
+const show = (ui: React.ReactElement) => render(<MotionProvider>{ui}</MotionProvider>);
 
 describe("LayoutRenderer", () => {
   it("renders phone cards in order, skipping desktop-only, unknown, and hidden cards", () => {
-    render(<LayoutRenderer cards={cards} breakpoint="phone" data={data} registry={registry} />);
+    show(<LayoutRenderer cards={cards} breakpoint="phone" data={data} registry={registry} />);
     expect(screen.getByText("a:ready:phone")).toBeInTheDocument();
     expect(screen.queryByText(/^b:/)).not.toBeInTheDocument();
     expect(screen.queryByText(/^h:/)).not.toBeInTheDocument();
   });
 
   it("renders desktop cards with their default spans", () => {
-    render(<LayoutRenderer cards={cards} breakpoint="desktop" data={data} registry={registry} />);
+    show(<LayoutRenderer cards={cards} breakpoint="desktop" data={data} registry={registry} />);
     expect(screen.getByTestId("cell-1")).toHaveStyle({ gridColumn: "span 8" });
     expect(screen.getByTestId("cell-2")).toHaveStyle({ gridRow: "span 2" });
     expect(screen.getByText("b:ready:desktop")).toBeInTheDocument();
   });
 
   it("uses an explicit span when the instance has one", () => {
-    render(<LayoutRenderer cards={[{ id: "1", type: "a", options: {}, span: { cols: 12, rows: 1 } }]} breakpoint="desktop" data={data} registry={registry} />);
+    show(<LayoutRenderer cards={[{ id: "1", type: "a", options: {}, span: { cols: 12, rows: 1 } }]} breakpoint="desktop" data={data} registry={registry} />);
     expect(screen.getByTestId("cell-1")).toHaveStyle({ gridColumn: "span 12" });
   });
 
   it("wraps every rendered card when a wrapper is given", () => {
-    render(
+    show(
       <LayoutRenderer
         cards={cards}
         breakpoint="phone"
@@ -58,7 +60,12 @@ describe("LayoutRenderer", () => {
   });
 
   it("shows hidden cards while editing", () => {
-    render(<LayoutRenderer cards={cards} breakpoint="phone" data={data} registry={registry} editing />);
+    show(<LayoutRenderer cards={cards} breakpoint="phone" data={data} registry={registry} editing />);
     expect(screen.getByText("h:ready:phone")).toBeInTheDocument();
+  });
+
+  it("wraps cards in motion containers", () => {
+    show(<LayoutRenderer cards={cards} breakpoint="phone" data={data} registry={registry} />);
+    expect(screen.getByTestId("card-motion-1")).toHaveTextContent("a:ready:phone");
   });
 });

@@ -1,14 +1,16 @@
 import { render, screen } from "@testing-library/react";
+import { MotionProvider } from "@/components/motion/MotionProvider";
 import { describe, expect, it } from "vitest";
 import { baseCardProps } from "@/test/fixtures";
 import { sunCard, type SunOptions } from "./definition";
 import { SunCard } from "./SunCard";
 
 const opts = sunCard.defaultOptions as SunOptions;
+const show = (ui: React.ReactElement) => render(<MotionProvider>{ui}</MotionProvider>);
 
 describe("SunCard", () => {
   it("shows sunrise, sunset, solar noon, both durations, and twilight", () => {
-    render(<SunCard {...baseCardProps()} options={opts} />);
+    show(<SunCard {...baseCardProps()} options={opts} />);
     expect(screen.getByText("Sunrise")).toBeInTheDocument();
     expect(screen.getByText("Sunset")).toBeInTheDocument();
     expect(screen.getByText("Solar Noon")).toBeInTheDocument();
@@ -22,7 +24,7 @@ describe("SunCard", () => {
 
   it("hides twilight, solar noon, and visible sun when turned off", () => {
     const off = { showTwilight: false, showSolarNoon: false, showVisibleSun: false };
-    render(<SunCard {...baseCardProps({ options: off })} options={off} />);
+    show(<SunCard {...baseCardProps({ options: off })} options={off} />);
     expect(screen.queryByText(/First to Last Light/)).not.toBeInTheDocument();
     expect(screen.queryByText("Solar Noon")).not.toBeInTheDocument();
     expect(screen.queryByText("Visible Sun")).not.toBeInTheDocument();
@@ -31,7 +33,7 @@ describe("SunCard", () => {
   });
 
   it("shows a skeleton without astronomy data", () => {
-    render(<SunCard {...baseCardProps({ astro: undefined, status: "loading" })} options={opts} />);
+    show(<SunCard {...baseCardProps({ astro: undefined, status: "loading" })} options={opts} />);
     expect(screen.getByTestId("card-skeleton")).toBeInTheDocument();
   });
 });

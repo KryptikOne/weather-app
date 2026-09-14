@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Nunito } from "next/font/google";
 import { CATALOG } from "@/cards/registry";
+import { MotionProvider } from "@/components/motion/MotionProvider";
 import { StoreProvider } from "@/lib/store/StoreProvider";
 import "@/app/globals.css";
 
@@ -23,7 +24,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en" className={`dark ${nunito.variable}`}>
       <body>
-        <StoreProvider catalog={CATALOG}>{children}</StoreProvider>
+        <StoreProvider catalog={CATALOG}>
+          <MotionProvider>{children}</MotionProvider>
+        </StoreProvider>
       </body>
     </html>
   );
