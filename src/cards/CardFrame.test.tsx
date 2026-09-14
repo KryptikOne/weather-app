@@ -23,4 +23,10 @@ describe("CardFrame", () => {
     expect(screen.getByText("body")).toBeInTheDocument();
     expect(screen.getByText(/older data/i)).toBeInTheDocument();
   });
+
+  it("can hide its header", () => {
+    render(<CardFrame title="Now" icon={Sun} status="ready" hideHeader><p>body</p></CardFrame>);
+    expect(screen.queryByRole("heading")).not.toBeInTheDocument();
+    expect(screen.getByText("body")).toBeInTheDocument();
+  });
 });
