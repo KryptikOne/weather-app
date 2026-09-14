@@ -16,6 +16,7 @@ export const detailsCard = defineCard<DetailsOptions>({
   defaultOptions: { metrics: DEFAULT_METRICS },
   fields: [{ kind: "ordered-multi", key: "metrics", label: "Metrics", options: metricOptions, default: DEFAULT_METRICS, min: 1 }],
   breakpoints: ["phone", "desktop"],
-  spans: [{ cols: 8, rows: 1 }, { cols: 4, rows: 1 }, { cols: 6, rows: 1 }],
+  defaultSpan: { cols: 8, rows: 1 },
+  minCols: 3,
   needs: ["weather"],
 });

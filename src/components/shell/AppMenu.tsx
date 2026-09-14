@@ -1,9 +1,11 @@
 "use client";
-import { MoreHorizontal, RefreshCw } from "lucide-react";
+import { MoreHorizontal, Pencil, RefreshCw, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
-export function AppMenu({ onRefresh }: { onRefresh: () => void }) {
+type Props = { onRefresh: () => void; onEdit: () => void; onSettings: () => void };
+
+export function AppMenu({ onRefresh, onEdit, onSettings }: Props) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -12,9 +14,10 @@ export function AppMenu({ onRefresh }: { onRefresh: () => void }) {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem onSelect={onRefresh}>
-          <RefreshCw className="size-4" /> Refresh
-        </DropdownMenuItem>
+        <DropdownMenuItem onSelect={onEdit}><Pencil className="size-4" /> Edit layout</DropdownMenuItem>
+        <DropdownMenuItem onSelect={onSettings}><Settings className="size-4" /> Settings</DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onSelect={onRefresh}><RefreshCw className="size-4" /> Refresh</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

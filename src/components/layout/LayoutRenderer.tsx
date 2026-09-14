@@ -1,6 +1,7 @@
 "use client";
+import type { ReactNode } from "react";
 import { REGISTRY } from "@/cards/registry";
-import type { AnyCardDefinition, Breakpoint, CardInstance, CardLocation, CardProps, CardStatus } from "@/cards/types";
+import { clampSpan, type AnyCardDefinition, type Breakpoint, type CardInstance, type CardLocation, type CardProps, type CardStatus } from "@/cards/types";
 import type { AstroData } from "@/lib/astro";
 import type { Units } from "@/lib/format/units";
 import type { WeatherSnapshot } from "@/lib/weather/types";
@@ -21,14 +22,18 @@ type Props = {
   breakpoint: Breakpoint;
   data: LayoutData;
   registry?: Record<string, AnyCardDefinition>;
+  /** Decorates each rendered card (the editor uses it for drag handles and controls). */
+  wrap?: (item: { instance: CardInstance; def: AnyCardDefinition }, node: ReactNode) => ReactNode;
+  /** While editing, auto-hiding cards stay visible so they can be moved or removed. */
+  editing?: boolean;
 };
 
-export function LayoutRenderer({ cards, breakpoint, data, registry = REGISTRY }: Props) {
+export function LayoutRenderer({ cards, breakpoint, data, registry = REGISTRY, wrap, editing = false }: Props) {
   const items: { instance: CardInstance; def: AnyCardDefinition; props: CardProps }[] = [];
   for (const instance of cards) {
     const def = registry[instance.type];
     if (!def || !def.breakpoints.includes(breakpoint)) continue;
-    const span = breakpoint === "desktop" ? instance.span ?? def.spans[0] : undefined;
+    const span = breakpoint === "desktop" ? clampSpan(instance.span ?? def.defaultSpan, def.minCols) : undefined;
     const props: CardProps = {
       instance,
       options: { ...def.defaultOptions, ...instance.options },
@@ -40,22 +45,27 @@ export function LayoutRenderer({ cards, breakpoint, data, registry = REGISTRY }:
       breakpoint,
       span,
     };
-    if (def.isHidden?.(props)) continue;
+    if (!editing && def.isHidden?.(props)) continue;
     items.push({ instance, def, props });
   }
+
+  const decorate = (instance: CardInstance, def: AnyCardDefinition, node: ReactNode) =>
+    wrap ? wrap({ instance, def }, node) : node;
 
   if (breakpoint === "phone") {
     return (
       <PhoneStack>
-        {items.map(({ instance, def, props }) => <def.component key={instance.id} {...props} />)}
+        {items.map(({ instance, def, props }) => (
+          <div key={instance.id}>{decorate(instance, def, <def.component {...props} />)}</div>
+        ))}
       </PhoneStack>
     );
   }
   return (
     <DesktopGrid>
       {items.map(({ instance, def, props }) => (
-        <DesktopCell key={instance.id} span={props.span ?? def.spans[0]} testId={`cell-${instance.id}`}>
-          <def.component {...props} />
+        <DesktopCell key={instance.id} span={props.span ?? def.defaultSpan} testId={`cell-${instance.id}`}>
+          {decorate(instance, def, <def.component {...props} />)}
         </DesktopCell>
       ))}
     </DesktopGrid>

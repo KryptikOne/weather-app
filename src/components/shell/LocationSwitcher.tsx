@@ -53,6 +53,7 @@ export function LocationSwitcher({ open, onOpenChange }: { open: boolean; onOpen
         <SheetHeader>
           <SheetTitle>Locations</SheetTitle>
         </SheetHeader>
+        <div className="px-4 pb-6">
         <ul className="mt-2 flex flex-col gap-1">
           <li>
             <Row active={active === "current"} onClick={() => choose("current")} icon={<LocateFixed className="size-4" />}>
@@ -89,6 +90,7 @@ export function LocationSwitcher({ open, onOpenChange }: { open: boolean; onOpen
             ))}
           </ul>
         )}
+        </div>
       </SheetContent>
     </Sheet>
   );

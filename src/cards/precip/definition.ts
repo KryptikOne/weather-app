@@ -13,7 +13,8 @@ export const precipCard = defineCard<PrecipOptions>({
   defaultOptions: { hideWhenDry: false },
   fields: [{ kind: "toggle", key: "hideWhenDry", label: "Hide when nothing is expected", default: false }],
   breakpoints: ["phone", "desktop"],
-  spans: [{ cols: 4, rows: 1 }, { cols: 6, rows: 1 }],
+  defaultSpan: { cols: 4, rows: 1 },
+  minCols: 3,
   needs: ["weather"],
   isHidden: (p) => p.options.hideWhenDry && Boolean(p.snapshot) && isDry(p.snapshot!.minutely),
 });

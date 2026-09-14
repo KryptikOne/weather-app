@@ -15,6 +15,7 @@ export const moonCard = defineCard<MoonOptions>({
     { kind: "toggle", key: "showRiseSet", label: "Show moonrise and moonset", default: true },
   ],
   breakpoints: ["phone", "desktop"],
-  spans: [{ cols: 4, rows: 1 }, { cols: 6, rows: 1 }],
+  defaultSpan: { cols: 4, rows: 1 },
+  minCols: 3,
   needs: ["astro"],
 });

@@ -1,6 +1,13 @@
 "use client";
 import { useMemo, useState } from "react";
-import { LayoutRenderer } from "@/components/layout/LayoutRenderer";
+import { cardDefinition } from "@/cards/registry";
+import { AddCardSheet } from "@/components/editor/AddCardSheet";
+import { EditableLayout } from "@/components/editor/EditableLayout";
+import { EditToolbar } from "@/components/editor/EditToolbar";
+import { OptionsSheet } from "@/components/editor/OptionsSheet";
+import { useLayoutEditor } from "@/components/editor/useLayoutEditor";
+import { LayoutRenderer, type LayoutData } from "@/components/layout/LayoutRenderer";
+import { SettingsSheet } from "@/components/settings/SettingsSheet";
 import { LocationSwitcher } from "@/components/shell/LocationSwitcher";
 import { TopBar } from "@/components/shell/TopBar";
 import { Button } from "@/components/ui/button";
@@ -12,6 +19,7 @@ import { useWeather } from "@/lib/hooks/useWeather";
 import { useAppState } from "@/lib/store/StoreProvider";
 import { dayPhase, palette } from "@/lib/theme/palette";
 import { useWeatherTheme } from "@/lib/theme/useWeatherTheme";
+import { cn } from "@/lib/utils";
 
 export function App() {
   const { state, dispatch, hydrated } = useAppState();
@@ -20,7 +28,11 @@ export function App() {
   const coords = useMemo(() => (location ? { lat: location.lat, lon: location.lon } : null), [location]);
   const { snapshot, status: weatherStatus, refetch } = useWeather(coords);
   const astro = useAstro(coords);
+  const editor = useLayoutEditor(breakpoint);
   const [switcherOpen, setSwitcherOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [addOpen, setAddOpen] = useState(false);
+  const [optionsFor, setOptionsFor] = useState<string | null>(null);
 
   const themePalette = useMemo(
     () => (snapshot && astro ? palette(dayPhase(new Date(), astro.sun), snapshot.current.condition.group) : null),
@@ -28,9 +40,9 @@ export function App() {
   );
   useWeatherTheme(themePalette);
 
-  const cardLocation = location
-    ? { ...location, timezone: snapshot?.location.timezone ?? location.timezone }
-    : null;
+  const cardLocation = location ? { ...location, timezone: snapshot?.location.timezone ?? location.timezone } : null;
+  const data: LayoutData | null = cardLocation ? { snapshot, weatherStatus, astro, location: cardLocation, units: state.units } : null;
+  const optionsInstance = optionsFor ? editor.draft?.find((c) => c.id === optionsFor) ?? null : null;
 
   const useCurrent = () => {
     dispatch({ type: "setActiveLocation", active: "current" });
@@ -45,20 +57,42 @@ export function App() {
         onOpenSwitcher={() => setSwitcherOpen(true)}
         onUseCurrent={useCurrent}
         onRefresh={refetch}
+        onEdit={editor.start}
+        onSettings={() => setSettingsOpen(true)}
       />
-      <main className="mt-2">
-        {hydrated && cardLocation ? (
-          <LayoutRenderer
-            cards={state.layouts[breakpoint]}
-            breakpoint={breakpoint}
-            data={{ snapshot, weatherStatus, astro, location: cardLocation, units: state.units }}
-          />
+      <main className={cn("mt-2", editor.editing && "pb-24")}>
+        {hydrated && data ? (
+          editor.editing && editor.draft ? (
+            <EditableLayout
+              draft={editor.draft}
+              breakpoint={breakpoint}
+              data={data}
+              onMove={editor.move}
+              onRemove={editor.remove}
+              onOptions={setOptionsFor}
+              onSpan={editor.setSpan}
+            />
+          ) : (
+            <LayoutRenderer cards={state.layouts[breakpoint]} breakpoint={breakpoint} data={data} />
+          )
         ) : locationStatus === "denied" ? (
           <EmptyState onChoose={() => setSwitcherOpen(true)} />
         ) : (
           <LoadingSkeleton />
         )}
       </main>
+      {editor.editing && (
+        <EditToolbar breakpoint={breakpoint} onAdd={() => setAddOpen(true)} onReset={editor.reset} onCancel={editor.cancel} onDone={editor.done} />
+      )}
+      <AddCardSheet open={addOpen} onOpenChange={setAddOpen} breakpoint={breakpoint} onAdd={editor.add} />
+      <OptionsSheet
+        open={optionsInstance !== null}
+        onOpenChange={(open) => { if (!open) setOptionsFor(null); }}
+        instance={optionsInstance}
+        def={optionsInstance ? cardDefinition(optionsInstance.type) ?? null : null}
+        onChange={editor.setOptions}
+      />
+      <SettingsSheet open={settingsOpen} onOpenChange={setSettingsOpen} />
       <LocationSwitcher open={switcherOpen} onOpenChange={setSwitcherOpen} />
     </div>
   );

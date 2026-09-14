@@ -5,7 +5,17 @@ import type { Units } from "@/lib/format/units";
 import type { WeatherSnapshot } from "@/lib/weather/types";
 
 export type Breakpoint = "phone" | "desktop";
-export type Span = { cols: 4 | 6 | 8 | 12; rows: 1 | 2 };
+export type Span = { cols: number; rows: number };
+export const MAX_COLS = 12;
+export const MAX_ROWS = 3;
+
+/** Keeps a span inside the grid and above the card's minimum width. */
+export function clampSpan(span: Span, minCols: number): Span {
+  return {
+    cols: Math.min(MAX_COLS, Math.max(minCols, Math.round(span.cols))),
+    rows: Math.min(MAX_ROWS, Math.max(1, Math.round(span.rows))),
+  };
+}
 export type CardStatus = "loading" | "ready" | "stale" | "error";
 export type DataNeed = "weather" | "astro" | "air";
 
@@ -44,7 +54,8 @@ export type CardDefinition<O extends Record<string, unknown> = Record<string, un
   defaultOptions: O;
   fields: OptionField[];
   breakpoints: Breakpoint[];
-  spans: Span[];          // first entry is the default desktop span
+  defaultSpan: Span;      // desktop size when added or when the instance has none
+  minCols: number;        // narrowest width the card stays readable at (1..12)
   needs: DataNeed[];
   isHidden?: (props: CardProps<O>) => boolean;
 };

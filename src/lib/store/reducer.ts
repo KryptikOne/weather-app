@@ -9,7 +9,8 @@ export type Action =
   | { type: "setActiveLocation"; active: "current" | string }
   | { type: "addSavedLocation"; location: SavedLocation }
   | { type: "removeSavedLocation"; id: string }
-  | { type: "setLastKnown"; lastKnown: LastKnown };
+  | { type: "setLastKnown"; lastKnown: LastKnown }
+  | { type: "moveSavedLocation"; id: string; direction: -1 | 1 };
 
 export function reduce(state: AppState, action: Action): AppState {
   switch (action.type) {
@@ -32,5 +33,14 @@ export function reduce(state: AppState, action: Action): AppState {
     }
     case "setLastKnown":
       return { ...state, locations: { ...state.locations, lastKnown: action.lastKnown } };
+    case "moveSavedLocation": {
+      const saved = state.locations.saved;
+      const from = saved.findIndex((l) => l.id === action.id);
+      const to = from + action.direction;
+      if (from < 0 || to < 0 || to >= saved.length) return state;
+      const next = saved.slice();
+      [next[from], next[to]] = [next[to], next[from]];
+      return { ...state, locations: { ...state.locations, saved: next } };
+    }
   }
 }

@@ -20,6 +20,7 @@ export const hourlyCard = defineCard<HourlyOptions>({
     { kind: "select", key: "hours", label: "Hours shown", options: [{ value: "12", label: "12" }, { value: "24", label: "24" }, { value: "48", label: "48" }], default: "24" },
   ],
   breakpoints: ["phone", "desktop"],
-  spans: [{ cols: 8, rows: 1 }, { cols: 6, rows: 1 }, { cols: 12, rows: 1 }],
+  defaultSpan: { cols: 8, rows: 1 },
+  minCols: 4,
   needs: ["weather"],
 });

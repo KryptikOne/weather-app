@@ -12,6 +12,7 @@ export const airCard = defineCard<AirOptions>({
   defaultOptions: { showComponents: false },
   fields: [{ kind: "toggle", key: "showComponents", label: "Show pollutant breakdown (µg/m³)", default: false }],
   breakpoints: ["phone", "desktop"],
-  spans: [{ cols: 4, rows: 1 }, { cols: 6, rows: 1 }],
+  defaultSpan: { cols: 4, rows: 1 },
+  minCols: 3,
   needs: ["air"],
 });

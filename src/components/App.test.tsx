@@ -36,4 +36,16 @@ describe("App", () => {
     render(<StoreProvider catalog={CATALOG}><App /></StoreProvider>);
     expect(await screen.findByText(/pick a city/i)).toBeInTheDocument();
   });
+
+  it("does not show the edit toolbar until editing starts", async () => {
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      version: 1, layouts: { phone: [{ id: "s", type: "sun", options: {} }], desktop: [] }, units: {},
+      locations: { saved: [{ id: "x", name: "Tokyo", country: "JP", lat: 35.6, lon: 139.7 }], active: "x" },
+    }));
+    vi.spyOn(globalThis, "fetch").mockResolvedValue(new Response("{}", { status: 502 }));
+    render(<StoreProvider catalog={CATALOG}><App /></StoreProvider>);
+    await screen.findByRole("heading", { name: "Sun" });
+    expect(screen.queryByRole("button", { name: "Done" })).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Menu" })).toBeInTheDocument();
+  });
 });

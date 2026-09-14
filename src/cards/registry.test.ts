@@ -15,10 +15,18 @@ describe("registry", () => {
     for (const c of DEFAULT_DESKTOP_LAYOUT) expect(REGISTRY[c.type].breakpoints, c.type).toContain("desktop");
   });
 
-  it("uses a supported span for every desktop default", () => {
+  it("uses a span inside every desktop default card's limits", () => {
     for (const c of DEFAULT_DESKTOP_LAYOUT) {
-      const ok = REGISTRY[c.type].spans.some((s) => s.cols === c.span?.cols && s.rows === c.span?.rows);
-      expect(ok, `${c.type} ${JSON.stringify(c.span)}`).toBe(true);
+      const def = REGISTRY[c.type];
+      expect(c.span, c.type).toBeDefined();
+      expect(c.span!.cols, c.type).toBeGreaterThanOrEqual(def.minCols);
+      expect(c.span!.cols, c.type).toBeLessThanOrEqual(12);
+      expect(c.span!.rows, c.type).toBeGreaterThanOrEqual(1);
+      expect(c.span!.rows, c.type).toBeLessThanOrEqual(3);
+    }
+    for (const def of Object.values(REGISTRY)) {
+      expect(def.defaultSpan.cols, def.type).toBeGreaterThanOrEqual(def.minCols);
+      expect(def.minCols, def.type).toBeGreaterThanOrEqual(1);
     }
   });
 

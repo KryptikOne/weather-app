@@ -15,6 +15,7 @@ export const heroCard = defineCard<HeroOptions>({
     { kind: "toggle", key: "showConditionText", label: "Show condition text", default: true },
   ],
   breakpoints: ["desktop"],
-  spans: [{ cols: 12, rows: 1 }, { cols: 8, rows: 1 }],
+  defaultSpan: { cols: 12, rows: 1 },
+  minCols: 6,
   needs: ["weather"],
 });

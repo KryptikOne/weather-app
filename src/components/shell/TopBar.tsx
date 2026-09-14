@@ -10,9 +10,11 @@ type Props = {
   onOpenSwitcher: () => void;
   onUseCurrent: () => void;
   onRefresh: () => void;
+  onEdit: () => void;
+  onSettings: () => void;
 };
 
-export function TopBar({ locationName, status, onOpenSwitcher, onUseCurrent, onRefresh }: Props) {
+export function TopBar({ locationName, status, onOpenSwitcher, onUseCurrent, onRefresh, onEdit, onSettings }: Props) {
   const label = locationName ?? (status === "denied" ? "Choose a location" : "Finding you");
   return (
     <header className="sticky top-0 z-20 flex h-14 items-center justify-between bg-background/80 px-2 backdrop-blur">
@@ -23,7 +25,7 @@ export function TopBar({ locationName, status, onOpenSwitcher, onUseCurrent, onR
         {label}
         <ChevronDown className="size-4 opacity-60" />
       </Button>
-      <AppMenu onRefresh={onRefresh} />
+      <AppMenu onRefresh={onRefresh} onEdit={onEdit} onSettings={onSettings} />
     </header>
   );
 }

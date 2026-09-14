@@ -37,4 +37,13 @@ describe("reduce", () => {
     const other = { ...DEFAULT_STATE, units: { ...DEFAULT_STATE.units, time: "24h" as const } };
     expect(reduce(DEFAULT_STATE, { type: "hydrate", state: other })).toBe(other);
   });
+
+  it("moves a saved location up or down and clamps at the ends", () => {
+    const denver = { id: "d", name: "Denver", country: "US", lat: 39.7, lon: -104.9 };
+    let s = reduce(DEFAULT_STATE, { type: "addSavedLocation", location: tokyo });
+    s = reduce(s, { type: "addSavedLocation", location: denver });
+    expect(reduce(s, { type: "moveSavedLocation", id: "d", direction: -1 }).locations.saved.map((l) => l.id)).toEqual(["d", "x"]);
+    expect(reduce(s, { type: "moveSavedLocation", id: "x", direction: -1 })).toBe(s);
+    expect(reduce(s, { type: "moveSavedLocation", id: "d", direction: 1 })).toBe(s);
+  });
 });

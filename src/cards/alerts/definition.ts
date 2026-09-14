@@ -12,7 +12,8 @@ export const alertsCard = defineCard<AlertsOptions>({
   defaultOptions: { alwaysShow: false },
   fields: [{ kind: "toggle", key: "alwaysShow", label: "Show even when there are no alerts", default: false }],
   breakpoints: ["phone", "desktop"],
-  spans: [{ cols: 12, rows: 1 }, { cols: 6, rows: 1 }],
+  defaultSpan: { cols: 12, rows: 1 },
+  minCols: 3,
   needs: ["weather"],
   isHidden: (p) => !p.options.alwaysShow && (!p.snapshot || p.snapshot.alerts.length === 0),
 });

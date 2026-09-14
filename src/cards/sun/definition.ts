@@ -16,6 +16,7 @@ export const sunCard = defineCard<SunOptions>({
     { kind: "toggle", key: "showVisibleSun", label: "Show visible sun (sunrise to sunset)", default: true },
   ],
   breakpoints: ["phone", "desktop"],
-  spans: [{ cols: 4, rows: 1 }, { cols: 6, rows: 1 }],
+  defaultSpan: { cols: 4, rows: 1 },
+  minCols: 3,
   needs: ["astro"],
 });

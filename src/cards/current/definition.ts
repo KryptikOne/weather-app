@@ -19,6 +19,7 @@ export const currentCard = defineCard<CurrentOptions>({
     { kind: "toggle", key: "showIcon", label: "Show condition icon", default: true },
   ],
   breakpoints: ["phone", "desktop"],
-  spans: [{ cols: 4, rows: 1 }, { cols: 6, rows: 1 }],
+  defaultSpan: { cols: 4, rows: 1 },
+  minCols: 3,
   needs: ["weather"],
 });

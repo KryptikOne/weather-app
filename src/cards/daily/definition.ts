@@ -16,6 +16,7 @@ export const dailyCard = defineCard<DailyOptions>({
     { kind: "toggle", key: "showTodayMarker", label: "Mark current temperature on today", default: true },
   ],
   breakpoints: ["phone", "desktop"],
-  spans: [{ cols: 4, rows: 2 }, { cols: 6, rows: 2 }, { cols: 6, rows: 1 }],
+  defaultSpan: { cols: 4, rows: 2 },
+  minCols: 3,
   needs: ["weather"],
 });
