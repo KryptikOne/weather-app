@@ -1,6 +1,6 @@
 'use client'
 import React, { useState } from 'react'
-import { fetchLatLonByCity } from '@/app/lib/utils'
+import { fetchLatLongByCity } from '@/app/lib/utils'
 
 export default function LocationSearch({ onLocationSelected }: { onLocationSelected: (lat: number, lon: number) => void }) {
   const [city, setCity] = useState('')
@@ -13,7 +13,7 @@ export default function LocationSearch({ onLocationSelected }: { onLocationSelec
     setLoading(true)
     setError('')
     try {
-      const { lat, lon } = await fetchLatLonByCity(city, countryCode);
+      const { lat, lon } = await fetchLatLongByCity(city, countryCode);
       onLocationSelected(lat, lon)
     } catch (err: unknown) {
       if (err instanceof Error) {

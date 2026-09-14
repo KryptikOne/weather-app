@@ -7,13 +7,7 @@ import DailyConditions from '@/app/ui/dashboard/daily-conditions'
 import MoonPhase from '@/app/ui/dashboard/moon-phase'
 import SunriseSunset from '@/app/ui/dashboard/sunrise-sunset'
 
-export default function DashboardClient({
-  currentdata,
-  locationLatLong = { lat: 41.881832, lon: -87.623177 }, // Default to Chicago if no location provided
-}: {
-  currentdata: unknown,
-  locationLatLong?: { lat: number; lon: number }
-}) {
+export default function DashboardClient({ currentdata }: { currentdata: unknown }) {
   const currentWeather = currentdata
   const [coords, setCoords] = useState<{ lat: number; lon: number } | null>(null)
 

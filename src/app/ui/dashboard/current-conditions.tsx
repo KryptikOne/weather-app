@@ -1,17 +1,17 @@
 import React from 'react';
 
-// export type Location = { lat: number; lon: number } | null;
+export type Coords = { lat: number; lon: number };
 
 export default function CurrentConditions({
-  location,
+  coords,
   data
 }: {
-  location: Location,
+  coords: Coords,
   data: unknown
 }) {
   const currentData = data || {}
   console.log('Current Conditions Data:', currentData)
-  console.log('Current Location:', location)
+  console.log('Current Coords:', coords)
 
   return (
     <div className="widget bg-white rounded-lg shadow p-4">
