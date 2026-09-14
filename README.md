@@ -1,43 +1,34 @@
-# 🌤️ Weather App
+# Weather
 
-A simple and responsive weather app that fetches real-time weather data using the [OpenWeatherMap API](https://openweathermap.org/api).
+A personal weather dashboard. Phone-first with a separate desktop layout, customizable cards, and weather-driven color. Data from OpenWeather One Call 3.0, sun and moon computed locally.
 
-## 🚀 Features
-
-- This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
-- Current weather conditions by city in multiple formats, (hourly, daily, etc.)
-- Temperature, humidity, wind, and more
-- Clean and mobile-friendly UI
-- Built with [Next.js](https://nextjs.org/)
-
-## 🛠️ Getting Started
-
-### 1. Clone the Repository
+## Setup
 
 ```bash
-git clone https://github.com/KryptikOne/weather-app.git
-cd weather-app
-```
-### 2. Create the Necessary Accounts and Files
-
-Navigate to [OpenWeatherMap](https://openweathermap.org/api) and sign up for an account if you don't have one. Get yourself an API Key.
-
-In the project root, create a .env file with the following:
-
-```
-WEATHER_API_KEY=[YOUR_KEY_GOES_HERE];
+pnpm install
 ```
 
-### 3. Run the Project Locally
+Create `.env` in the project root:
 
-Run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
+OPENWEATHER_API_KEY=your_key_here
+```
+
+The key needs One Call 3.0 enabled on your OpenWeather account. Geocoding and air quality use the same key.
+
+## Scripts
+
+| Command | What it does |
+|---|---|
+| `pnpm dev` | development server |
+| `pnpm build` | production build (needs the `.env` key present) |
+| `pnpm test` | unit and component tests |
+| `pnpm lint` | ESLint |
+
+## Layout
+
+- `src/app` routes, API handlers, manifest
+- `src/cards` one folder per card: definition, component, math, tests
+- `src/components` shell, layout renderer, shadcn primitives
+- `src/lib` weather provider, astronomy, formatting, store, hooks, theme
+- `docs/specs` design documents, `docs/plans` implementation plans
