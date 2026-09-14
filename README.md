@@ -1,35 +1,34 @@
-# 🌤️ Weather App
+# Weather
 
-A personal weather dashboard built on [Next.js](https://nextjs.org) that pulls real-time data from the [OpenWeatherMap API](https://openweathermap.org/api).
+A personal weather dashboard. Phone-first with a separate desktop layout, customizable cards, and weather-driven color. Data from OpenWeather One Call 3.0, sun and moon computed locally.
 
-## 🚀 Features
-
-- Current conditions, hourly, and daily views by city
-- Temperature, humidity, wind, and more
-- Clean and mobile-friendly UI
-
-## 🛠️ Getting Started
-
-### 1. Clone the Repository
+## Setup
 
 ```bash
-git clone https://github.com/KryptikOne/weather-app.git
-cd weather-app
 pnpm install
 ```
 
-### 2. Get an API Key
-
-Sign up at [OpenWeatherMap](https://openweathermap.org/api) and create an API key. The current-conditions call uses the One Call 3.0 API, which needs that subscription enabled on your account.
-
-In the project root, create a `.env` file:
+Create `.env` in the project root:
 
 ```
 OPENWEATHER_API_KEY=your_key_here
 ```
 
-### 3. Run Locally
+The key needs One Call 3.0 enabled on your OpenWeather account. Geocoding and air quality use the same key.
 
-```bash
-pnpm dev
-```
+## Scripts
+
+| Command | What it does |
+|---|---|
+| `pnpm dev` | development server |
+| `pnpm build` | production build (needs the `.env` key present) |
+| `pnpm test` | unit and component tests |
+| `pnpm lint` | ESLint |
+
+## Layout
+
+- `src/app` routes, API handlers, manifest
+- `src/cards` one folder per card: definition, component, math, tests
+- `src/components` shell, layout renderer, shadcn primitives
+- `src/lib` weather provider, astronomy, formatting, store, hooks, theme
+- `docs/specs` design documents, `docs/plans` implementation plans

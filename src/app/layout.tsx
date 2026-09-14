@@ -1,24 +1,30 @@
-import { StateContextProvider } from "@/app/context/StateContext"
-import type { Metadata } from "next"
-import "@/app/globals.css"
-import BreakpointHelper from "@/app/ui/global/breakpoint-helper"
+import type { Metadata, Viewport } from "next";
+import { Nunito } from "next/font/google";
+import { CATALOG } from "@/cards/registry";
+import { StoreProvider } from "@/lib/store/StoreProvider";
+import "@/app/globals.css";
 
-export const metadata = {
-  title: "Weather ⛈️ ⛈️ ⛈️",
-  description: "A configurable weather app using open data"
-}
+const nunito = Nunito({ subsets: ["latin"], weight: ["600", "700", "800", "900"], variable: "--font-nunito", display: "swap" });
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export const metadata: Metadata = {
+  title: "Weather",
+  description: "A personal weather dashboard",
+  appleWebApp: { capable: true, statusBarStyle: "black-translucent", title: "Weather" },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#0a0a0b",
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+};
+
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
-      <body className={`antialiased`}>
-        <StateContextProvider>{children}</StateContextProvider>
-        <BreakpointHelper />
+    <html lang="en" className={`dark ${nunito.variable}`}>
+      <body>
+        <StoreProvider catalog={CATALOG}>{children}</StoreProvider>
       </body>
     </html>
-  )
+  );
 }
