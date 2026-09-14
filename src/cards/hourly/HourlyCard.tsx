@@ -1,5 +1,5 @@
 "use client";
-import { Clock } from "lucide-react";
+import { Clock, Navigation } from "lucide-react";
 import { m, useReducedMotion } from "motion/react";
 import { useState } from "react";
 import { CardFrame } from "@/cards/CardFrame";
@@ -33,6 +33,7 @@ export function HourlyCard({ instance, options, snapshot, location, units, statu
   const defined = values.filter((v): v is number => v != null);
   const mean = defined.length ? defined.reduce((a, b) => a + b, 0) / defined.length : 0;
   const stroke = isTemp ? tempColor(mean) : "var(--weather-accent)";
+  const showWind = active === "windSpeed" || active === "windGust";
 
   const reduced = useReducedMotion();
   const spring = reduced ? { duration: 0 } : { type: "spring" as const, stiffness: 400, damping: 32 };
@@ -58,6 +59,16 @@ export function HourlyCard({ instance, options, snapshot, location, units, statu
                   </div>
                 ))}
               </div>
+              {showWind && (
+                <div className="mt-1 flex">
+                  {series.map((s) => (
+                    <div key={s.time} style={{ width: colW }} className="flex justify-center">
+                      {/* windDeg is where the wind comes from; the arrow points where it blows, as on the details card. */}
+                      <Navigation data-testid="wind-arrow" aria-hidden="true" className="size-3.5 text-muted-foreground" style={{ transform: `rotate(${(s.windDeg + 180) % 360}deg)` }} />
+                    </div>
+                  ))}
+                </div>
+              )}
               <svg width={width} height={STRIP_HEIGHT} viewBox={`0 0 ${width} ${STRIP_HEIGHT}`} className="block">
                 {curve && <m.path initial={false} animate={{ d: curve.path }} transition={ease} fill="none" stroke={stroke} strokeWidth="3" strokeLinecap="round" />}
                 {rects?.map((r, i) => (
@@ -77,8 +88,8 @@ export function HourlyCard({ instance, options, snapshot, location, units, statu
                       transition={ease}
                       dy={curve ? 4.5 : 0}
                       textAnchor="middle"
-                      className="fill-foreground text-[13px] font-extrabold"
-                      style={{ paintOrder: "stroke", stroke: "var(--card)", strokeWidth: 6, strokeLinejoin: "round" }}
+                      className="fill-foreground text-[16px] font-black"
+                      style={{ paintOrder: "stroke", stroke: "var(--card)", strokeWidth: 7, strokeLinejoin: "round" }}
                     >
                       {label}
                     </m.text>

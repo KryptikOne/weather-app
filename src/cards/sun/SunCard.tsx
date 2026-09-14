@@ -47,21 +47,23 @@ export function SunCard({ options, astro, location, units, status }: CardProps<S
       {sun && (
         <div className="flex flex-col items-center">
           <svg viewBox="0 0 320 176" className="w-full max-w-sm" role="img" aria-label="Sun position today">
-            <path d={arcPath(ARC.cx, ARC.cy, ARC.r)} fill="none" stroke="#7a5a2f" strokeWidth="3" />
+            <path d={arcPath(ARC.cx, ARC.cy, ARC.r)} fill="none" stroke="#b45309" strokeOpacity="0.35" strokeWidth="3" />
             <m.path
               d={arcPath(ARC.cx, ARC.cy, ARC.r)}
               fill="none"
-              stroke="#e0a34a"
+              stroke="#fbbf24"
               strokeWidth="3"
               strokeLinecap="round"
               initial={{ pathLength: 0 }}
               animate={{ pathLength: t }}
               transition={draw}
             />
-            <circle cx={ARC.cx - ARC.r} cy={ARC.cy} r="5" fill="#7a5a2f" />
+            <circle cx={ARC.cx - ARC.r} cy={ARC.cy} r="5" fill="#b45309" />
+            <circle cx={ARC.cx + ARC.r} cy={ARC.cy} r="5" fill="#b45309" />
             <m.g data-testid="sun-marker" initial={false} animate={{ x: marker.x, y: marker.y }} transition={glide}>
-              <circle r="14" fill="#f2c14e" opacity="0.25" />
-              <circle r="8" fill="#f2c14e" />
+              <circle r="22" fill="#fef3c7" opacity="0.12" />
+              {/* The same animated Meteocons sun the condition icons use; SMIL runs inside an SVG image reference. */}
+              <image href="/icons/weather/clear-day.svg" x="-24" y="-24" width="48" height="48" />
             </m.g>
             {stats.map((s, i) => (
               <Stat key={s.label} y={firstY + i * 40} value={s.value} label={s.label} testId={s.testId} />

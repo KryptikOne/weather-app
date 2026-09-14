@@ -4,7 +4,7 @@ import { cToF, type Units } from "@/lib/format/units";
 import { METRICS, type MetricKey } from "@/lib/metrics";
 import type { Condition, HourlyPoint } from "@/lib/weather/types";
 
-export type SeriesPoint = { time: string; value: number | null; condition: Condition };
+export type SeriesPoint = { time: string; value: number | null; condition: Condition; windDeg: number };
 export type Box = { width: number; height: number; top: number; bottom: number };
 
 const BAR_METRICS = new Set<string>(["precipChance", "precipAmount"]);
@@ -16,6 +16,7 @@ export function hourlySeries(hourly: HourlyPoint[], key: string, count: number):
     time: h.time,
     value: metric?.fromHourly ? metric.fromHourly(h) : null,
     condition: h.condition,
+    windDeg: h.windDeg,
   }));
 }
 

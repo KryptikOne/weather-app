@@ -1,7 +1,7 @@
 import { scaleLinear } from "d3-scale";
 
 const STOPS = [-10, 0, 10, 20, 30, 40];
-const COLORS = ["#5b8def", "#7fd1f7", "#6fd08c", "#f2d64b", "#f59e3b", "#e5484d"];
+const COLORS = ["#3b82f6", "#22d3ee", "#4ade80", "#facc15", "#fb923c", "#ef4444"];
 
 const scale = scaleLinear<string>().domain(STOPS).range(COLORS).clamp(true);
 

@@ -7,14 +7,16 @@ import type { Units } from "@/lib/format/units";
 import type { MoonOptions } from "./definition";
 import { moonLitPath, PRINCIPAL_PHASE_VALUE } from "./math";
 
-const DARK = "#5b21b6";
-const LIT = "#e879f9";
+const DARK = "#1f2a44";
+const LIT = "#eef3fa";
+const RIM = "#94a3b8";
 
 function MoonDisc({ phase, r, testId }: { phase: number; r: number; testId?: string }) {
   return (
     <svg data-testid={testId} width={r * 2 + 4} height={r * 2 + 4} viewBox={`${-r - 2} ${-r - 2} ${r * 2 + 4} ${r * 2 + 4}`} aria-hidden="true">
       <circle r={r} fill={DARK} />
       <path d={moonLitPath(phase, r)} fill={LIT} />
+      <circle r={r} fill="none" stroke={RIM} strokeOpacity="0.4" strokeWidth="1" />
     </svg>
   );
 }

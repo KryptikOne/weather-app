@@ -28,6 +28,15 @@ describe("HourlyCard", () => {
     expect(screen.getAllByTestId("strip-bar").length).toBeGreaterThan(0);
   });
 
+  it("shows a direction arrow per hour when a wind chip is active", () => {
+    show(<HourlyCard {...baseCardProps({ options: opts })} options={opts} />);
+    expect(screen.queryAllByTestId("wind-arrow")).toHaveLength(0);
+    fireEvent.click(screen.getByRole("button", { name: "Wind" }));
+    const arrows = screen.getAllByTestId("wind-arrow");
+    expect(arrows).toHaveLength(24);
+    expect(arrows[0].style.transform).toMatch(/rotate\(\d+deg\)/);
+  });
+
   it("only offers the configured chips", () => {
     const o = { ...opts, metrics: ["temp", "windSpeed"], defaultMetric: "windSpeed" };
     show(<HourlyCard {...baseCardProps({ options: o })} options={o} />);
