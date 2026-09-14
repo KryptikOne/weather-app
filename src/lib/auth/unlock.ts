@@ -10,7 +10,8 @@ const readPin = (body: unknown): string =>
 
 export async function handleUnlock(body: unknown, env: Env, opts: Options = {}): Promise<Response> {
   const { delayMs = 1500, now = Date.now(), secure = true } = opts;
-  if (!env.pin || !env.secret || !/^\d+$/.test(env.pin) || env.pin.length < MIN_PIN_LENGTH) {
+  // Any characters are allowed; a long password-manager string is the intended use.
+  if (!env.pin || !env.secret || env.pin.length < MIN_PIN_LENGTH) {
     return Response.json({ error: "not configured" }, { status: 500 });
   }
   if (!safeEqual(readPin(body), env.pin)) {

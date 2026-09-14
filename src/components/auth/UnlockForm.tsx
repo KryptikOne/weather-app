@@ -25,7 +25,7 @@ export function UnlockForm() {
         return;
       }
       setPin("");
-      setError(res.status === 500 ? "This deployment has no PIN configured." : "That's not it.");
+      setError(res.status === 500 ? "This deployment has no passcode configured." : "That's not it.");
     } catch {
       setError("Couldn't reach the server. Try again.");
     } finally {
@@ -35,15 +35,14 @@ export function UnlockForm() {
 
   return (
     <form onSubmit={submit} className="flex flex-col gap-3">
-      <label htmlFor="pin" className="text-xs font-extrabold uppercase tracking-[0.15em] text-muted-foreground">PIN</label>
+      <label htmlFor="pin" className="text-xs font-extrabold uppercase tracking-[0.15em] text-muted-foreground">Passcode</label>
       <input
         id="pin"
         type="password"
-        inputMode="numeric"
         autoComplete="current-password"
         autoFocus
         value={pin}
-        onChange={(e) => setPin(e.target.value.replace(/\D/g, ""))}
+        onChange={(e) => setPin(e.target.value)}
         className="h-12 rounded-full bg-secondary px-5 text-lg font-bold tracking-[0.3em] outline-none focus:ring-2 focus:ring-ring"
       />
       <Button type="submit" disabled={busy || !pin} className="h-12 rounded-full text-base font-bold">

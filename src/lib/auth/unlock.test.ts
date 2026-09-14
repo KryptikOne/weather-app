@@ -8,10 +8,9 @@ const now = 1_800_000_000_000;
 const fast = { delayMs: 0, now };
 
 describe("handleUnlock", () => {
-  it("refuses to run without a numeric PIN of at least six digits and a secret", async () => {
+  it("refuses to run without a passcode of at least six characters and a secret", async () => {
     expect((await handleUnlock({ pin: "1" }, { pin: undefined, secret: "s" }, fast)).status).toBe(500);
     expect((await handleUnlock({ pin: "1" }, { pin: "12345", secret: "s" }, fast)).status).toBe(500);
-    expect((await handleUnlock({ pin: "1" }, { pin: "abcdefgh", secret: "s" }, fast)).status).toBe(500);
     expect((await handleUnlock({ pin: "1" }, { pin: env.pin, secret: undefined }, fast)).status).toBe(500);
   });
 
@@ -34,6 +33,12 @@ describe("handleUnlock", () => {
     const token = cookie.split(";")[0].split("=")[1];
     expect(await verifySession(env.secret, token, now + 1000)).toBe(true);
     expect(await verifySession(env.secret, token, now + 31_536_000_001)).toBe(false);
+  });
+
+  it("accepts any characters in the passcode", async () => {
+    const alnum = { pin: "Xk9-qL2$vB7!mN4", secret: "s" };
+    expect((await handleUnlock({ pin: alnum.pin }, alnum, fast)).status).toBe(204);
+    expect((await handleUnlock({ pin: alnum.pin.toLowerCase() }, alnum, fast)).status).toBe(401);
   });
 
   it("omits Secure for local http", async () => {
