@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   title: "Weather",
   description: "A personal weather dashboard",
   appleWebApp: { capable: true, statusBarStyle: "black-translucent", title: "Weather" },
+  robots: { index: false, follow: false },
 };
 
 export const viewport: Viewport = {
